@@ -86,8 +86,8 @@ impl ShamirSS{
             
             secret[i] = GFC256::interpolate(points);
         }
-       let s = secret.clone();
-       Ok(s)
+
+       Ok(secret.clone())
     }
 }
 struct GFC256;
@@ -102,24 +102,14 @@ impl GFC256 {
     fn mul(a:u8, b:u8)-> u8{
         
         if a==0 || b==0 { return 0 }
-    
 
-        let aa = LOG[a as usize];
-        
-        let bb = LOG[b as usize];
-        
-        let iaa = aa as i32;
-        let ibb =bb as i32;
-        let exp = iaa + ibb;
-
+        let exp=LOG[a as usize] as i32 + LOG[b as usize] as i32;
         
         EXP[exp as usize]
     }
     fn div(a:u8, b:u8)-> u8{
-        let log = LOG[b as usize];
-        let exp = 255 - log;
-
-        Self::mul(a, EXP[exp as usize])
+   
+        Self::mul(a, EXP[255 - LOG[b as usize] as usize])
 
     }
 
@@ -129,8 +119,7 @@ impl GFC256 {
         // Horner's method
         for i in (0..=p.len()-1).rev(){
             let val=p[i];
-            result=Self::mul(result, x);
-            result=Self::add(result, val);
+            result=Self::add(Self::mul(result, x), val);
         }
 
         result
@@ -176,10 +165,7 @@ impl GFC256 {
             for j in 0..=len{
                 let bx = points[j][0];
                 if i!=j{
-                    let sub1=Self::sub(x, bx);
-                    let sub2=Self::sub(ax, bx);
-                    let div=Self::div(sub1,sub2 );
-                    li = Self::mul(li, div);
+                     li = Self::mul(li, Self::div(Self::sub(x, bx),Self::sub(ax, bx) ));
 
                 }
 
