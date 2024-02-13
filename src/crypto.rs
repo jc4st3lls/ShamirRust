@@ -151,7 +151,7 @@ impl GFC256 {
     fn generate(degree:i32, x:u8)->Vec<u8>{
 
         let d:i32=degree+1;
-        let mut p=vec![0u8; d as usize];
+        let mut p:Vec<u8>;
 
         loop {
            p = (0..d).map(|_| rand::random::<u8>()).collect();
