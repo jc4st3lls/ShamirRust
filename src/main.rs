@@ -12,7 +12,10 @@ fn main() {
     let secret= b"Hello";
     let numparts = 5;
     let miniumparts = 3;
-
+    
+    println!("Origin Shared Secret: {} ", String::from_utf8_lossy(secret));
+    println!("Origin Shared Secret Bytes: {:?} ", secret);
+    
     let keys=ShamirSS::split(numparts, miniumparts, secret.to_vec());
     if keys.is_ok(){
         let keys = keys.unwrap();
@@ -22,22 +25,30 @@ fn main() {
             let data=key.1;
             let string = general_purpose::STANDARD.encode(&data) ;
 
-            println!("Key {}: {}", key.0,string);
+            print!("Key {}: [{}] [", key.0,string);
 
+            for byte in &data.clone() {
+                print!("{:02X} ", byte);
+            }
+            print!("]");
+            println!(); 
         }
         let mut parts:HashMap<i32,Vec<u8>>=HashMap::new();
-        parts.insert(0, keys[&1].clone());
-        parts.insert(1, keys[&2].clone());
-        parts.insert(2, keys[&3].clone());
+        for (key, value) in &keys {
+            // Copy only entries with keys less than or equal to 3
+            if *key <= miniumparts {
+                parts.insert(*key, value.clone());
+            }
+        }
+
+      
         let nshared=ShamirSS::join(parts);
         if nshared.is_ok(){
-        
-            let shared = nshared.unwrap();
-
-            let string=String::from_utf8_lossy(shared.as_slice()).to_string();
             
-            println!("Shared Key: {}", string);
-
+            let shared = nshared.unwrap();
+            println!("Restaured Shared Secret Bytes: {:?} ", shared);
+            let shared_string_value = String::from_utf8_lossy(secret);
+            println!("Restaured Shared Secret: {}",shared_string_value);
         }
         else{
             let msg=nshared.unwrap_err();

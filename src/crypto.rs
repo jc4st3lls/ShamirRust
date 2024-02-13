@@ -29,7 +29,7 @@ impl ShamirSS{
               let index=x-1;              
               let element =GFC256::eval(p.clone(), x as u8);
               values[index as usize][i]=element;
-              println!("values: {:?}", values);
+              
            }
 
        }
@@ -54,7 +54,7 @@ impl ShamirSS{
         
         if !(parts.len() > 0) { return Err("No parts provided".to_string());}
         let mut h = HashSet::new();
-        for value in parts.values(){
+        for value in p.values(){
             let l=value.clone().len();
             if l!=0 {
                 h.insert(l);
@@ -62,25 +62,28 @@ impl ShamirSS{
     
         }
         if h.len()!=1 {return Err("Varying lengths of part values".to_string());}
-        let len = h.iter().next().unwrap();
+        let len = h.iter().next().unwrap();   
+        let partslen=parts.len();
         let mut secret = vec![0u8;len.clone()];
 
+
         for i in 0..=secret.len()-1 {
-            let mut points = vec![vec![0u8;2];p.len() as usize];
+            let mut points = vec![vec![0u8;2];partslen as usize];
             let mut j=0;
-            let p2=p.clone();
 
-            for (key,val) in p2.iter(){
-                let mut ele=vec![0u8;2];
-                ele[0]=key.clone() as u8;
-                ele[1]=val.clone()[i] as u8;
-                
 
-                points[j]=ele;
+            let mut iter = parts.iter();
 
-                j+=1;
-               
+            while let Some(item) = iter.next() {
+                //println!("{}", item.0);
+                points[j][0]=*item.0 as u8;
+                points[j][1]=item.1[i];
+
+                j=j+1;
+
             }
+
+            
             secret[i] = GFC256::interpolate(points);
         }
        let s = secret.clone();
@@ -91,30 +94,26 @@ struct GFC256;
 
 impl GFC256 {
     fn add(a:u8, b:u8)-> u8{
-        let r=a ^ b;
-        println!("add r:{}",r.to_string());
-        r
+        a ^ b
     }
     fn sub(a:u8, b:u8)-> u8{
         Self::add(a,b)
     }
     fn mul(a:u8, b:u8)-> u8{
-        println!("mul a={} b={}",a,b);
+        
         if a==0 || b==0 { return 0 }
     
 
         let aa = LOG[a as usize];
-        println!("mul aa={}",aa);
+        
         let bb = LOG[b as usize];
-        println!("mul bb={}",bb);
+        
         let iaa = aa as i32;
         let ibb =bb as i32;
         let exp = iaa + ibb;
 
-        println!("exp:{}",exp.to_string());
-        let r= EXP[exp as usize];
-        println!("exp r:{}",r.to_string());
-        r
+        
+        EXP[exp as usize]
     }
     fn div(a:u8, b:u8)-> u8{
         let log = LOG[b as usize];
@@ -129,18 +128,11 @@ impl GFC256 {
 
         // Horner's method
         for i in (0..=p.len()-1).rev(){
-            println!("i {}",i);
             let val=p[i];
-            println!("val {}",val);
             result=Self::mul(result, x);
-            println!("eval mul result:{} x {}",result,x);
             result=Self::add(result, val);
-            println!("eval add result:{} val {}",result, val);
         }
 
-
-        
-        println!("eval result:{}",result);
         result
     }
     fn degree(p:Vec<u8>)->i32{
@@ -176,27 +168,25 @@ impl GFC256 {
     fn interpolate(points:Vec<Vec<u8>>)-> u8 {
         let x:u8=0;
         let mut y:u8=0;
-        let mut i=0;
-        for row in points.iter() {
-          let ax:u8=row[0];
-          let ay:u8=row[1];
-          let mut li:u8=1;
-          let mut j=0;
-          for row1 in points.iter() {
-            let bx = row1[0];
-            if i != j
-            {
-                let sub1=Self::sub(x, bx);
-                let sub2=Self::sub(ax, bx);
-                let div=Self::div(sub1,sub2 );
-                li = Self::mul(li, div);
-            }
+        let len=points.len()-1;
+        for i in 0..=len{
+            let ax:u8=points[i][0];
+            let ay:u8=points[i][1];
+            let mut li:u8=1;
+            for j in 0..=len{
+                let bx = points[j][0];
+                if i!=j{
+                    let sub1=Self::sub(x, bx);
+                    let sub2=Self::sub(ax, bx);
+                    let div=Self::div(sub1,sub2 );
+                    li = Self::mul(li, div);
 
-            j=j+1;
-          }
-          let mul=Self::mul(li, ay);
-          y = Self::add(y, mul);
-          i=i+1;
+                }
+
+            }
+            let mul=Self::mul(li, ay);
+            y = Self::add(y, mul);
+
         }
         y
     }
