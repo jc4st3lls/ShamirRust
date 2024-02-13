@@ -1,15 +1,12 @@
 mod crypto;
 
 use base64::{engine::general_purpose, Engine as _};
-
-
-
-use std::collections::HashMap;
-
+use std::collections::BTreeMap;
 use crypto::ShamirSS;
+
 fn main() {
 
-    let secret= b"Hello";
+    let secret= b"Hello Shamir Shared Secret!!!!!";
     let numparts = 5;
     let miniumparts = 3;
     
@@ -33,7 +30,7 @@ fn main() {
             print!("]");
             println!(); 
         }
-        let mut parts:HashMap<i32,Vec<u8>>=HashMap::new();
+        let mut parts:BTreeMap<i32,Vec<u8>>=BTreeMap::new();
         for (key, value) in &keys {
             // Copy only entries with keys less than or equal to 3
             if *key <= miniumparts {

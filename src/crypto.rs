@@ -1,13 +1,13 @@
 
 
-use std::{collections::{HashMap,HashSet}, fmt::Debug};
+use std::{collections::{HashSet,BTreeMap}, fmt::Debug};
 
 #[derive(Debug,Clone)]
 pub struct ShamirSS;
 
 impl ShamirSS{
     
-    pub fn split(n:i32,k:i32,secret:Vec<u8>)->Result<HashMap<i32,Vec<u8>>,String>{
+    pub fn split(n:i32,k:i32,secret:Vec<u8>)->Result<BTreeMap<i32,Vec<u8>>,String>{
        
         if !(k > 1) {
             return Err("Not k > 1".to_string())
@@ -33,7 +33,7 @@ impl ShamirSS{
            }
 
        }
-       let mut parts:HashMap<i32,Vec<u8>>=HashMap::new();
+       let mut parts:BTreeMap<i32,Vec<u8>>=BTreeMap::new();
        for i in 0..=n-1
             {
                 let mut tmp = vec![0u8;secret.len()];
@@ -49,7 +49,7 @@ impl ShamirSS{
        Ok(parts)
     }
 
-    pub fn join(parts:HashMap<i32,Vec<u8>>)->Result<Vec<u8>,String>{
+    pub fn join(parts:BTreeMap<i32,Vec<u8>>)->Result<Vec<u8>,String>{
         let p=parts.clone();
         
         if !(parts.len() > 0) { return Err("No parts provided".to_string());}
