@@ -7,8 +7,25 @@ Per entendre-ho millor, imaginem que tenim un document confidencial xifrat amb u
 Si ens parem a pensar una mica. això dins el món del blockchain, on la finalitat entre d’altres, és posar valor al contingut digital, aquest algoritme pot ser de molt ús, de fet ho és (compartir valor).
 I també fora del món blockchain, en qualsevol sistema on la confidencialitat i la privacitat sigui necessària. Imaginem que, existeix un Sistema de Salut, amb dades de pacients, les quals només és poden visualitzar amb el consentiment de certes parts. Si aquestes dades estan xifrades, i per desxifrar-les és requereix que tots els actors (pacient + metge + sistema) o una part d’ells (pacient + sistema o metge + sistema) estiguin d’”acord”, una manera de controlar aquest accés podria ser amb l’ Schema Shamir. El mateix es pot aplicar a documents confidencials, contrasenyes amb privilegis alts, etc.
 
-Exemple d'us:
+```Rust
+let secret= b"Hello Shamir Shared Secret!!!!!";
+let keys=ShamirSS::split(numparts, miniumparts, secret.to_vec());
+
+...
+let mut parts:BTreeMap<i32,Vec<u8>>=BTreeMap::new();
+for (key, value) in &keys {
+// Copy only entries with keys less than or equal to 3
+   if *key <= miniumparts {
+      parts.insert(*key, value.clone());
+   }
+}
+let nshared=ShamirSS::join(parts);
+
+...
+
 ```
+Exemple d'us:
+```Rust
  fn main() {
 
     let secret= b"Hello Shamir Shared Secret!!!!!";
