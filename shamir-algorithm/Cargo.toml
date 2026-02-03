@@ -1,6 +1,6 @@
 [package]
 name = "shamir-algorithm"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "A Rust implementation of Shamir's Secret Sharing algorithm using Galois Field arithmetic over GF(256)"
 license = "MIT"
