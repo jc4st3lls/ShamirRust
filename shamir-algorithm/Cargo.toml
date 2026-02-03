@@ -1,10 +1,10 @@
 [package]
 name = "shamir-algorithm"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A Rust implementation of Shamir's Secret Sharing algorithm using Galois Field arithmetic over GF(256)"
 license = "MIT"
-repository = "https://github.com/yourusername/ShamirRust"
+repository = "https://github.com/jc4st3lls/ShamirRust"
 keywords = ["cryptography", "secret-sharing", "shamir", "threshold"]
 categories = ["cryptography", "algorithms"]
 readme = "README.md"
