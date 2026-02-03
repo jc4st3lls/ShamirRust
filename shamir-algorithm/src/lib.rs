@@ -55,7 +55,7 @@ impl ShamirSS {
 
         let seclen = secret.len();
         let mut values: Vec<Vec<u8>> = vec![vec![0u8; seclen]; n as usize];
-        let degree = (k - 1) as i32;
+        let degree = k - 1;
 
         for (i, &byte) in secret.iter().enumerate() {
             let p = GFC256::generate(degree, byte);
@@ -133,8 +133,8 @@ impl GFC256 {
         let mut rng = rand::rng();
         let mut p = vec![0u8; (degree + 1) as usize];
         p[0] = secret_byte;
-        for i in 1..=degree as usize {
-            p[i] = rng.sample(StandardUniform);
+        for i in p.iter_mut().take(degree as usize + 1).skip(1) {
+            *i = rng.sample(StandardUniform);
         }
         // Ensure the leading coefficient is non-zero to maintain the degree
         while p[degree as usize] == 0 {

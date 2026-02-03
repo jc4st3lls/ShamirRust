@@ -14,8 +14,8 @@ fn main() {
     println!("Origin Shared Secret Bytes: {:?} ", secret);
     
     let keys=ShamirSS::split(numparts, miniumparts, secret.to_vec());
-    if keys.is_ok(){
-        let keys = keys.unwrap();
+    if let Ok(keys)=keys{
+        
         let keysiter = keys.clone();
         for key in keysiter{
 
@@ -40,20 +40,17 @@ fn main() {
 
       
         let nshared=ShamirSS::join(parts);
-        if nshared.is_ok(){
+        if let Ok(shared)=nshared{
             
-            let shared = nshared.unwrap();
             println!("Restaured Shared Secret Bytes: {:?} ", shared);
             let shared_string_value = String::from_utf8_lossy(shared.as_slice());
             println!("Restaured Shared Secret: {}",shared_string_value);
         }
-        else{
-            let msg=nshared.unwrap_err();
-            println!("{msg}");
+        else if let Err(msg) = nshared{
+            println!("Error during reconstruction: {}", msg);
         }
-    }else {
-        let msg=keys.unwrap_err();
-        println!("{msg}");
+    }else if let Err(msg)=keys{
+        println!("Error during splitting: {}", msg);
     }
 
 }
