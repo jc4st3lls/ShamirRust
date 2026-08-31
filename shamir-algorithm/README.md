@@ -5,6 +5,7 @@ A Rust implementation of Shamir's Secret Sharing algorithm using Galois Field ar
 ## Description
 
 Shamir's Secret Sharing is a cryptographic algorithm that allows a secret to be divided into multiple shares such that:
+
 - The secret can be reconstructed from a minimum threshold of shares
 - Fewer than the threshold shares reveal no information about the secret
 
@@ -16,7 +17,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-shamir-algorithm = "0.1.0"
+shamir-algorithm = "0.1.3"
 ```
 
 ### Example

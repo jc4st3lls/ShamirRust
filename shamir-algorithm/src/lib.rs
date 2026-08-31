@@ -7,7 +7,7 @@
 /// # Example
 ///
 /// ```rust
-/// use shamir_rust::ShamirSS;
+/// use shamir_algorithm::ShamirSS;
 /// use std::collections::BTreeMap;
 ///
 /// let secret = b"Hello, world!";
@@ -30,8 +30,7 @@ use std::{
     collections::{BTreeMap, HashSet},
     fmt::Debug,
 };
-use rand::distr::StandardUniform;
-use rand::Rng;
+use rand::{RngExt, distr::StandardUniform};
 use tables::{EXP, LOG};
 
 /// Shamir Secret Sharing implementation.

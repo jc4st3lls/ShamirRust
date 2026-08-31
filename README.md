@@ -51,12 +51,12 @@ This is particularly useful in scenarios requiring distributed trust, such as:
 Add to your `Cargo.toml`:
 ```toml
 [dependencies]
-shamir-algorithm = "0.1.0"
+shamir-algorithm = "0.1.3"
 ```
 
 ### Building from Source
 ```bash
-git clone https://github.com/yourusername/ShamirRust.git
+git clone https://github.com/jc4st3lls/ShamirRust.git
 cd ShamirRust
 cargo build --release
 ```
